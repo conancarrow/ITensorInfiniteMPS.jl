@@ -17,12 +17,12 @@ function ITensors.expect(ψ, o)
   return (noprime(ψ * op(o, filterinds(ψ, "Site")...)) * dag(ψ))[]
 end
 
-function IFT_vumps(NNCoupling, TFCoupling, LFieldCoupling)
+function IFT_vumps(NNCoupling, TFCoupling, LFieldCoupling, bond_dimension)
 	##############################################################################
 	# VUMPS/TDVP parameters
 	#
 	
-	maxdim = 2 # Maximum bond dimension
+	maxdim = bond_dimension # Maximum bond dimension
 	cutoff = 1e-6 # Singular value cutoff when increasing the bond dimension
 	max_vumps_iters = 100 # Maximum number of iterations of the VUMPS/TDVP algorithm at a fixed bond dimension
 	tol = 1e-7 # Precision error tolerance for outer loop of VUMPS or TDVP
@@ -113,7 +113,7 @@ function IFT_vumps(NNCoupling, TFCoupling, LFieldCoupling)
 		"J"=>NNCoupling,
 		"h"=>TFCoupling,
 		"lambda"=>LFieldCoupling,
-		"State"=>ψ,
+		# "State"=>ψ,
 		"Vumps_Energy"=>energy_infinite,
 		# "Dmrg_Energy"=>energy_finite.re,
 		"AL_Array[1]"=>Array(ψ.AL[1],inds(ψ.AL[1])),
