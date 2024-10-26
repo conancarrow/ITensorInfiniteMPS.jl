@@ -17,16 +17,16 @@ function ITensors.expect(ψ, o)
   return (noprime(ψ * op(o, filterinds(ψ, "Site")...)) * dag(ψ))[]
 end
 
-function IFT_gse(NNCoupling, TFCoupling, LFieldCoupling)
+function IFT_vumps(NNCoupling, TFCoupling, LFieldCoupling)
 	##############################################################################
 	# VUMPS/TDVP parameters
 	#
 	
-	maxdim = 3 # Maximum bond dimension
-	cutoff = 1e-4 # Singular value cutoff when increasing the bond dimension
+	maxdim = 2 # Maximum bond dimension
+	cutoff = 1e-6 # Singular value cutoff when increasing the bond dimension
 	max_vumps_iters = 100 # Maximum number of iterations of the VUMPS/TDVP algorithm at a fixed bond dimension
 	tol = 1e-7 # Precision error tolerance for outer loop of VUMPS or TDVP
-	outer_iters = maxdim-1 # Number of times to increase the bond dimension
+	outer_iters = maxdim # Number of times to increase the bond dimension
 	time_step = -Inf # -Inf corresponds to VUMPS, finite time_step corresponds to TDVP
 	solver_tol = (x -> x / 500) # Tolerance for the local solver (eigsolve in VUMPS and exponentiate in TDVP)
 	multisite_update_alg = "parallel" # Choose between ["sequential", "parallel"]. Only parallel works with TDVP.
@@ -109,13 +109,18 @@ function IFT_gse(NNCoupling, TFCoupling, LFieldCoupling)
 	# @show S_finite
 	# @show S_infinite
 	return Dict(
-		"BondDimension"=>maxdim,
-		"Delta"=>NNCoupling,
+		"Bond_Dimension"=>maxdim,
+		"J"=>NNCoupling,
+		"h"=>TFCoupling,
+		"lambda"=>LFieldCoupling,
 		"State"=>ψ,
 		"Vumps_Energy"=>energy_infinite,
 		# "Dmrg_Energy"=>energy_finite.re,
-		"AL_Array"=>Array(ψ.AL[1],inds(ψ.AL[1])),
-		"AR_Array"=>Array(ψ.AR[1],inds(ψ.AR[1])),
-		"C_Array"=>Array(ψ.C[1],inds(ψ.C[1]))
+		"AL_Array[1]"=>Array(ψ.AL[1],inds(ψ.AL[1])),
+		"AL_Array[2]"=>Array(ψ.AL[2],inds(ψ.AL[2])),
+		"AR_Array[1]"=>Array(ψ.AR[1],inds(ψ.AR[1])),
+		"AR_Array[2]"=>Array(ψ.AR[2],inds(ψ.AR[2])),
+		"C_Array[1]"=>Array(ψ.C[1],inds(ψ.C[1])),
+		"C_Array[2]"=>Array(ψ.C[2],inds(ψ.C[2]))
 		)
 end
